@@ -29,7 +29,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-  "pyrox @ git+https://github.com/iroxusux/Pyrox.git@irox_update",
+  "pyrox @ git+https://github.com/iroxusux/Pyrox.git@main",
   "pyinstaller==6.15.0",
   "pytest",
   "PyQt6",
