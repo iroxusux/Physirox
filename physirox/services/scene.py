@@ -4,6 +4,20 @@ from enum import auto
 from typing import Any, Callable
 import json
 from pathlib import Path
+from pyrox.interfaces import IStatusServiceMixin
+from pyrox.services import (
+    EventBus,
+    Event,
+    EventType,
+    StatusUpdateEventBus,
+    StatusUpdateEvent,
+    StatusUpdateEventType,
+    ServiceManager,
+    GuiManager,
+    log,
+    get_open_file,
+    get_save_file
+)
 from physirox.interfaces import (
     ICompositeSceneObject,
     IPhysicsBody2D,
@@ -12,18 +26,7 @@ from physirox.interfaces import (
     ISceneObject,
     ISceneRunnerService,
 )
-
-from pyrox.services import ServiceManager, GuiManager, log
 from physirox.services import environment, physics
-from pyrox.services import (
-    EventBus,
-    Event,
-    EventType,
-    StatusUpdateEventBus,
-    StatusUpdateEvent,
-    StatusUpdateEventType
-)
-from pyrox.services.file import get_open_file, get_save_file
 
 
 class HasSceneMixin:
@@ -337,6 +340,7 @@ class SceneBridgeService:
 
 class SceneRunnerService(
     ISceneRunnerService,
+    IStatusServiceMixin
 ):
     """Static class, run scenes with a supplied GUI Application context.
 
@@ -366,6 +370,24 @@ class SceneRunnerService(
 
     def __init__(self):
         raise ValueError("SceneRunnerService is a static class and cannot be initialized directly!")
+
+    # ----------------------------------------------------------------------------------
+    # IStatusServiceMixin implementation
+    # ----------------------------------------------------------------------------------
+
+    def is_service_active(self) -> bool:
+        return self._running
+
+    def is_service_initialized(self) -> bool:
+        return self._scene is not None
+
+    def get_viewable_attributes(self) -> dict[str, Any]:
+        return {
+            "running": self._running,
+            "scene": self._scene.get_name() if self._scene else None,
+            "physics_enabled": self._enable_physics,
+            "update_rate_fps": self.get_update_rate(),
+        }
 
     @classmethod
     def initialize(
