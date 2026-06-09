@@ -48,7 +48,7 @@ def _make_floor(
     layer: int = 0,
     description: str = "",
     properties: dict | None = None,
-    id: str | None = None,
+    id_: str | None = None,
     group_id: str | None = None,
     tags: list[str] | None = None,
     body: FloorBody | None = None,
@@ -62,7 +62,7 @@ def _make_floor(
         layer=layer,
         description=description,
         properties=properties,
-        id=id,
+        id_=id_,
         group_id=group_id,
         tags=tags,
     )
@@ -112,13 +112,13 @@ class TestFloorSceneObjectInit(unittest.TestCase):
         self.assertIs(obj._floor_body, body)
 
     def test_explicit_id_stored(self):
-        obj = _make_floor(id="floor-abc-123")
-        self.assertEqual(obj.id, "floor-abc-123")
+        obj = _make_floor(id_="floor-abc-123")
+        self.assertEqual(obj.id_, "floor-abc-123")
 
     def test_auto_id_generated_when_none(self):
-        obj = _make_floor(id=None)
-        self.assertIsNotNone(obj.id)
-        self.assertGreater(len(obj.id), 0)
+        obj = _make_floor(id_=None)
+        self.assertIsNotNone(obj.id_)
+        self.assertGreater(len(obj.id_), 0)
 
     def test_group_id_stored(self):
         obj = _make_floor(group_id="grp-001")
@@ -197,8 +197,8 @@ class TestFloorSceneObjectCreate(unittest.TestCase):
         self.assertEqual(obj._layer, 3)
 
     def test_id_passed_through(self):
-        obj = FloorSceneObject.create(name="f", id="custom-id")
-        self.assertEqual(obj.id, "custom-id")
+        obj = FloorSceneObject.create(name="f", id_="custom-id")
+        self.assertEqual(obj.id_, "custom-id")
 
     def test_description_passed_through(self):
         obj = FloorSceneObject.create(name="f", description="main floor")
@@ -297,8 +297,8 @@ class TestFloorSceneObjectFromDict(unittest.TestCase):
         self.assertEqual(obj.description, "loading bay")
 
     def test_restores_id(self):
-        obj = FloorSceneObject.from_dict(self._minimal_dict(id="floor-xyz"))
-        self.assertEqual(obj.id, "floor-xyz")
+        obj = FloorSceneObject.from_dict(self._minimal_dict(id_="floor-xyz"))
+        self.assertEqual(obj.id_, "floor-xyz")
 
     def test_restores_group_id(self):
         obj = FloorSceneObject.from_dict(self._minimal_dict(group_id="group-1"))

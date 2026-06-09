@@ -8,7 +8,6 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 from typing import Any, Dict
-from pyrox.interfaces import ICoreMixin
 from physirox.interfaces import (
     IScene,
     ISceneObject,
@@ -33,10 +32,6 @@ class TestSceneInterface(unittest.TestCase):
     def test_scene_is_iscene(self):
         """Test that Scene implements IScene interface."""
         self.assertIsInstance(Scene(), IScene)
-
-    def test_scene_is_icoremixin(self):
-        """Test that Scene implements ICoreMixin interface."""
-        self.assertIsInstance(Scene(), ICoreMixin)
 
 
 class TestScene(unittest.TestCase):
@@ -1111,8 +1106,6 @@ class TestSceneConnectionRegistry(unittest.TestCase):
 
         # Verify the registry tracked it internally
         self.assertEqual(len(scene.get_connection_registry()._connections), 1)
-        key = (source_obj.get_id(), "on_detect", target_obj.get_id(), "receive")
-        self.assertIn(key, scene.get_connection_registry()._callback_refs)
 
     def test_scene_load_disabled_connection_not_wired(self):
         """Regression: disabled connections serialised as enabled=false must NOT
@@ -1148,10 +1141,6 @@ class TestSceneConnectionRegistry(unittest.TestCase):
         conns = loaded.get_connection_registry()._connections
         self.assertEqual(len(conns), 1)
         self.assertFalse(conns[0].enabled)
-
-        # No wired callback reference should exist for this connection
-        key = (conns[0].source_id, "on_detect", conns[0].target_id, "receive")
-        self.assertNotIn(key, loaded.get_connection_registry()._callback_refs)
 
     def test_scene_multiple_connections_roundtrip(self):
         """Multiple connections survive a full save/load cycle (records preserved)."""

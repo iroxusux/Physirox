@@ -10,7 +10,7 @@ from physirox.interfaces import (
     ISceneObject,
     Connection,
 )
-from pyrox.models.protocols import CoreMixin
+from pyrox.models import CoreMixin
 from physirox.models.physics.factory import PhysicsSceneFactory
 from physirox.models.scene.animation import SceneAnimator
 
@@ -29,7 +29,7 @@ class SceneObject(
         name: str,
         physics_body: IBasePhysicsBody,
         description: str = "",
-        id: str | None = None,
+        id_: str | None = None,
         group_id: str | None = None,
         properties: dict | None = None,
         parent: 'SceneObject | None' = None,
@@ -41,7 +41,7 @@ class SceneObject(
         bg_color: str = "#4a9eff",
         tags: list[str] | None = None,
     ):
-        CoreMixin.__init__(self, name=name, description=description, id=id or f'scene_object_{uuid.uuid4()}')
+        CoreMixin.__init__(self, name=name, description=description, id_=id_ or f'scene_object_{uuid.uuid4()}')
         self._properties: dict[str, Any] = properties if properties is not None else dict()
         self._physics_body = physics_body
         self._group_id: str | None = group_id
@@ -125,7 +125,7 @@ class SceneObject(
         """
         # Scene object properties
         self._properties.update({
-            "id": self.id,
+            "id_": self.id_,
             "name": self.name,
             "description": self.description,
             "scene_object_type": self._scene_object_type,
@@ -152,7 +152,7 @@ class SceneObject(
             "name": self.name,
             "scene_object_type": self._scene_object_type,
             "template_name": self._template_name,
-            "id": self.id,
+            "id_": self.id_,
             "group_id": self._group_id,
             "description": self._description,
             "tags": self._tags,
@@ -194,7 +194,7 @@ class SceneObject(
             name=data.get("name", ""),
             physics_body=body,
             description=data.get("description", ""),
-            id=data.get("id"),
+            id_=data.get("id_"),
             group_id=data.get("group_id"),
             properties=data.get("properties"),
             parent=None,  # Parent-child relationships are handled separately after all objects are created

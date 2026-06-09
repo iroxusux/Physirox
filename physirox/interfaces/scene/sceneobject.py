@@ -6,8 +6,8 @@ from typing import (
 )
 from pyrox.interfaces import (
     CardinalDirection,
-    ICoreMixin,
     Connection,
+    IHasId
 )
 from physirox.interfaces import (
     IDirectional2D,
@@ -16,8 +16,8 @@ from physirox.interfaces import (
 
 
 class ISceneObject(
-        ICoreMixin,
-        IDirectional2D,
+    IDirectional2D,
+    IHasId
 ):
     """Object base class for scene elements.
     """
@@ -59,7 +59,7 @@ class ISceneObject(
         """
         # Scene object properties
         self._properties.update({
-            "id": self.id,
+            "id_": self.id_,
             "name": self.name,
             "description": self.description,
             "scene_object_type": self._scene_object_type,
@@ -318,14 +318,14 @@ class ISceneObject(
             parent: The parent scene object, or None to remove parent
         """
         # Remove from old parent's children
-        if self._parent and self.id in self._parent.children:
-            del self._parent.children[self.id]
+        if self._parent and self.id_ in self._parent.children:
+            del self._parent.children[self.id_]
 
         self._parent = parent
 
         # Add to new parent's children
         if parent:
-            parent.children[self.id] = self
+            parent.children[self.id_] = self
 
     @property
     def parent(self) -> 'ISceneObject | None':

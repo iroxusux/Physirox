@@ -95,7 +95,7 @@ class SlidingDoorSceneObject(ActivatableCompositeKinematicSceneObject):
         door_color: str = "#888888",
         layer: int = 0,
         properties: dict | None = None,
-        id: str | None = None,
+        id_: str | None = None,
         group_id: str | None = None,
         tags: list[str] | None = None,
         **kwargs,
@@ -134,7 +134,7 @@ class SlidingDoorSceneObject(ActivatableCompositeKinematicSceneObject):
             direction=direction,
             animation_duration=animation_duration,
             properties=properties or {},
-            id=id,
+            id_=id_,
             group_id=group_id,
             tags=tags,
         )

@@ -238,7 +238,7 @@ class TestCreateOrRaiseFrame(_SceneviewerTestBase):
         task = self._make_task()
         task.create_or_raise_frame()
         frame = task._task_frame
-        frame.on_destroy().append.assert_called_once_with(task._frame_destroy_callback)  # type: ignore
+        frame.on_teardown().append.assert_called_once_with(task._frame_destroy_callback)  # type: ignore
 
     def test_raises_existing_alive_frame(self):
         """An existing alive frame is raised rather than re-created."""
