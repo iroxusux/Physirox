@@ -16,15 +16,14 @@ from physirox.interfaces import (
     CollisionLayer,
     IMaterial
 )
-from pyrox.models.protocols import Nameable, HasId
+from pyrox.models import CoreMixin
 from physirox.models.protocols.physics import PhysicsBody2D, Material
 from .factory import PhysicsSceneTemplate, PhysicsSceneFactory
 
 
 class BasePhysicsBody(
     IBasePhysicsBody,
-    Nameable,
-    HasId,
+    CoreMixin,
     PhysicsBody2D,
 ):
     """Base class for custom physics bodies.
@@ -39,7 +38,7 @@ class BasePhysicsBody(
     def __init__(
         self,
         name: str = "",
-        id: str = "",
+        id_: str = "",
         template_name: Optional[str] = None,
         body_type: BodyType = BodyType.DYNAMIC,
         enabled: bool = True,
@@ -92,9 +91,8 @@ class BasePhysicsBody(
             yaw: Yaw rotation in degrees
             material: Material properties (creates default if None)
         """
-        Nameable.__init__(self=self, name=name)
-        id = id or f'physics-body-{name}-{uuid.uuid4()}'
-        HasId.__init__(self=self, id=id)
+        id_ = id_ or f'physics-body-{name}-{uuid.uuid4()}'
+        CoreMixin.__init__(self=self, name=name, id_=id_)
         PhysicsBody2D.__init__(
             self=self,
             body_type=body_type,
@@ -184,7 +182,7 @@ class BasePhysicsBody(
         """
         return cls(
             name=data.get('name', ''),
-            id=data.get('id', ''),
+            id_=data.get('id_', ''),
             template_name=data.get('template_name'),
             body_type=BodyType.from_str(data.get('body_type', 'DYNAMIC')),
             enabled=data.get('enabled', True),
@@ -217,7 +215,7 @@ class BasePhysicsBody(
         """
         return {
             "name": self.name,
-            "id": self.id,
+            "id_": self.id_,
             "template_name": self.template_name,
             "body_type": self.body_type.name,
             "enabled": self.enabled,

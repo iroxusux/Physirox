@@ -76,7 +76,7 @@ class TestSceneManagement(unittest.TestCase):
         self.assertEqual(obj.name, "Test Object")
         self.assertEqual(obj.properties["x"], 10)
         self.assertEqual(obj.properties["y"], 20)
-        self.assertIsNotNone(obj.id)
+        self.assertIsNotNone(obj.id_)
 
     def test_scene_add_remove_objects(self):
         """Test adding and removing objects from scene."""
@@ -90,12 +90,12 @@ class TestSceneManagement(unittest.TestCase):
         scene.add_scene_object(obj2)
 
         self.assertEqual(len(scene.scene_objects), 2)
-        self.assertIn(obj1.id, scene.scene_objects)
+        self.assertIn(obj1.id_, scene.scene_objects)
 
-        scene.remove_scene_object(obj1.id)
+        scene.remove_scene_object(obj1.id_)
 
         self.assertEqual(len(scene.scene_objects), 1)
-        self.assertNotIn(obj1.id, scene.scene_objects)
+        self.assertNotIn(obj1.id_, scene.scene_objects)
 
 
 class TestZoomLogic(unittest.TestCase):

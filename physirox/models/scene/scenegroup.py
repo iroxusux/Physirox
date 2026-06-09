@@ -55,7 +55,7 @@ class SceneGroup(SceneObject, ISceneGroup):
         name: str,
         physics_body: IBasePhysicsBody,
         description: str = "",
-        id: str | None = None,
+        id_: str | None = None,
         properties: Optional[Dict] = None,
         parent: Optional[SceneObject] = None,
         layer: int = 0,
@@ -65,7 +65,7 @@ class SceneGroup(SceneObject, ISceneGroup):
             name=name,
             physics_body=physics_body,
             description=description,
-            id=id or f'{SCENE_OBJECT_TYPE_GROUP}_{uuid.uuid4()}',
+            id_=id_ or f'{SCENE_OBJECT_TYPE_GROUP}_{uuid.uuid4()}',
             properties=properties,
             parent=parent,
             layer=layer,
@@ -79,12 +79,12 @@ class SceneGroup(SceneObject, ISceneGroup):
 
     def add_member(self, obj: ISceneObject) -> None:
         """Add an existing scene object to this group."""
-        if obj.id == self.id:
+        if obj.id_ == self.id_:
             raise ValueError("A group cannot be a member of itself.")
-        self._members[obj.id] = obj
+        self._members[obj.id_] = obj
         # Tag the object with this group's ID (if it supports it)
         if hasattr(obj, "set_group_id"):
-            obj.set_group_id(self.id)  # type: ignore[union-attr]
+            obj.set_group_id(self.id_)  # type: ignore[union-attr]
         self.recompute_bounds()
 
     def remove_member(self, obj_id: str) -> None:
@@ -211,7 +211,7 @@ class SceneGroup(SceneObject, ISceneGroup):
         group = cls(
             name=data["name"],
             physics_body=body,
-            id=data.get("id", None),
+            id_=data.get("id_", None),
             description=data.get("description", ""),
             properties=data.get("properties", {}),
             layer=data.get("layer", 0),

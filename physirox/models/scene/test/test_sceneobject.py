@@ -137,7 +137,7 @@ class TestSceneObject(unittest.TestCase):
     def test_id_property(self):
         """Test SceneObject id property access."""
         obj = SceneObject(name="Name", physics_body=self.TestPhysicsBody())
-        obj_id = obj.id
+        obj_id = obj.id_
         self.assertIsNotNone(obj_id)
         self.assertIsInstance(obj_id, str)
 
@@ -211,7 +211,7 @@ class TestSceneObject(unittest.TestCase):
         obj_id = obj.get_id()
 
         self.assertIsInstance(result, dict)
-        self.assertEqual(result["id"], obj_id)
+        self.assertEqual(result["id_"], obj_id)
         self.assertEqual(result["name"], "DictObject")
         self.assertEqual(result["scene_object_type"], "Default")
         self.assertEqual(result["description"], "Dict description")
@@ -688,21 +688,21 @@ class TestSceneObjectParentChild(unittest.TestCase):
         parent = self._make("Parent")
         child = self._make("Child")
         parent.add_child(child)
-        self.assertIn(child.id, parent.get_children())
+        self.assertIn(child.id_, parent.get_children())
 
     def test_remove_child(self):
         parent = self._make("Parent")
         child = self._make("Child")
         parent.add_child(child)
-        parent.remove_child(child.id)
-        self.assertNotIn(child.id, parent.get_children())
+        parent.remove_child(child.id_)
+        self.assertNotIn(child.id_, parent.get_children())
         self.assertIsNone(child.get_parent())
 
     def test_get_child_by_id(self):
         parent = self._make("Parent")
         child = self._make("Child")
         parent.add_child(child)
-        result = parent.get_child(child.id)
+        result = parent.get_child(child.id_)
         self.assertIs(result, child)
 
     def test_get_child_not_found_returns_none(self):
@@ -713,7 +713,7 @@ class TestSceneObjectParentChild(unittest.TestCase):
         parent = self._make("Parent")
         child = self._make("Child")
         parent.add_child(child)
-        self.assertIn(child.id, parent.children)
+        self.assertIn(child.id_, parent.children)
 
     def test_set_parent_removes_from_old_parent(self):
         parent1 = self._make("Parent1")
@@ -721,7 +721,7 @@ class TestSceneObjectParentChild(unittest.TestCase):
         child = self._make("Child")
         parent1.add_child(child)
         child.set_parent(parent2)
-        self.assertNotIn(child.id, parent1.get_children())
+        self.assertNotIn(child.id_, parent1.get_children())
         self.assertIs(child.get_parent(), parent2)
 
     def test_set_parent_none_clears_parent(self):

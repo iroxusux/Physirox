@@ -125,8 +125,8 @@ class TestSceneGroupInit(unittest.TestCase):
 
     def test_has_valid_id(self):
         g = _make_group()
-        self.assertIsNotNone(g.id)
-        self.assertNotEqual(g.id, "")
+        self.assertIsNotNone(g.id_)
+        self.assertNotEqual(g.id_, "")
 
     def test_name_set_correctly(self):
         g = _make_group("My Group")
@@ -146,11 +146,11 @@ class TestSceneGroupMemberManagement(unittest.TestCase):
 
     def test_add_member(self):
         self.group.add_member(self.obj_a)
-        self.assertIn(self.obj_a.id, self.group.get_members())
+        self.assertIn(self.obj_a.id_, self.group.get_members())
 
     def test_add_member_sets_group_id_on_object(self):
         self.group.add_member(self.obj_a)
-        self.assertEqual(self.obj_a.get_group_id(), self.group.id)
+        self.assertEqual(self.obj_a.get_group_id(), self.group.id_)
 
     def test_add_self_raises(self):
         with self.assertRaises(ValueError):
@@ -158,12 +158,12 @@ class TestSceneGroupMemberManagement(unittest.TestCase):
 
     def test_remove_member(self):
         self.group.add_member(self.obj_a)
-        self.group.remove_member(self.obj_a.id)
-        self.assertNotIn(self.obj_a.id, self.group.get_members())
+        self.group.remove_member(self.obj_a.id_)
+        self.assertNotIn(self.obj_a.id_, self.group.get_members())
 
     def test_remove_member_clears_group_id(self):
         self.group.add_member(self.obj_a)
-        self.group.remove_member(self.obj_a.id)
+        self.group.remove_member(self.obj_a.id_)
         self.assertIsNone(self.obj_a.get_group_id())
 
     def test_remove_nonexistent_member_is_noop(self):
@@ -172,24 +172,24 @@ class TestSceneGroupMemberManagement(unittest.TestCase):
 
     def test_get_member_existing(self):
         self.group.add_member(self.obj_a)
-        self.assertIs(self.group.get_member(self.obj_a.id), self.obj_a)
+        self.assertIs(self.group.get_member(self.obj_a.id_), self.obj_a)
 
     def test_get_member_missing_returns_none(self):
         self.assertIsNone(self.group.get_member("missing"))
 
     def test_has_member_true(self):
         self.group.add_member(self.obj_a)
-        self.assertTrue(self.group.has_member(self.obj_a.id))
+        self.assertTrue(self.group.has_member(self.obj_a.id_))
 
     def test_has_member_false(self):
-        self.assertFalse(self.group.has_member(self.obj_a.id))
+        self.assertFalse(self.group.has_member(self.obj_a.id_))
 
     def test_get_member_ids(self):
         self.group.add_member(self.obj_a)
         self.group.add_member(self.obj_b)
         ids = self.group.get_member_ids()
-        self.assertIn(self.obj_a.id, ids)
-        self.assertIn(self.obj_b.id, ids)
+        self.assertIn(self.obj_a.id_, ids)
+        self.assertIn(self.obj_b.id_, ids)
         self.assertEqual(len(ids), 2)
 
     def test_get_members_returns_copy(self):
@@ -235,7 +235,7 @@ class TestSceneGroupBounds(unittest.TestCase):
         obj_b = _make_obj(x=100, y=100, width=10, height=10)
         group.add_member(obj_a)
         group.add_member(obj_b)
-        group.remove_member(obj_b.id)
+        group.remove_member(obj_b.id_)
         # Bounds should now reflect only obj_a
         self.assertAlmostEqual(group.width, 10.0)
         self.assertAlmostEqual(group.height, 10.0)
@@ -305,9 +305,9 @@ class TestSceneGroupDisband(unittest.TestCase):
         group.add_member(obj_b)
         members = group.disband()
         self.assertEqual(len(members), 2)
-        ids = {m.id for m in members}
-        self.assertIn(obj_a.id, ids)
-        self.assertIn(obj_b.id, ids)
+        ids = {m.id_ for m in members}
+        self.assertIn(obj_a.id_, ids)
+        self.assertIn(obj_b.id_, ids)
 
     def test_disband_clears_group_id_from_members(self):
         group = _make_group()
@@ -369,8 +369,8 @@ class TestSceneGroupSerialization(unittest.TestCase):
         group, obj_a, obj_b = self._make_populated_group()
         d = group.to_dict()
         self.assertIn("member_ids", d)
-        self.assertIn(obj_a.id, d["member_ids"])
-        self.assertIn(obj_b.id, d["member_ids"])
+        self.assertIn(obj_a.id_, d["member_ids"])
+        self.assertIn(obj_b.id_, d["member_ids"])
 
     def test_to_dict_scene_object_type(self):
         group = _make_group()
@@ -382,8 +382,8 @@ class TestSceneGroupSerialization(unittest.TestCase):
         d = group.to_dict()
         shell = SceneGroup.from_dict(d)
         pending = object.__getattribute__(shell, "_pending_member_ids")
-        self.assertIn(obj_a.id, pending)
-        self.assertIn(obj_b.id, pending)
+        self.assertIn(obj_a.id_, pending)
+        self.assertIn(obj_b.id_, pending)
 
     def test_from_dict_no_members_in_from_dict_shell(self):
         group, _, _ = self._make_populated_group()
@@ -407,22 +407,22 @@ class TestSceneGroupHelpers(unittest.TestCase):
         self.scene.add_scene_object(self.obj_b)
 
     def test_group_objects_creates_group_in_scene(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id], name="TestGroup")
-        self.assertIn(group.id, self.scene.scene_objects)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_], name="TestGroup")
+        self.assertIn(group.id_, self.scene.scene_objects)
 
     def test_group_objects_returns_scene_group(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
         self.assertIsInstance(group, SceneGroup)
 
     def test_group_objects_members_are_tagged(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        self.assertEqual(self.obj_a.get_group_id(), group.id)
-        self.assertEqual(self.obj_b.get_group_id(), group.id)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        self.assertEqual(self.obj_a.get_group_id(), group.id_)
+        self.assertEqual(self.obj_b.get_group_id(), group.id_)
 
     def test_group_objects_members_remain_in_scene(self):
-        self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        self.assertIn(self.obj_a.id, self.scene.scene_objects)
-        self.assertIn(self.obj_b.id, self.scene.scene_objects)
+        self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        self.assertIn(self.obj_a.id_, self.scene.scene_objects)
+        self.assertIn(self.obj_b.id_, self.scene.scene_objects)
 
     def test_group_objects_unknown_id_raises(self):
         with self.assertRaises(ValueError):
@@ -433,28 +433,28 @@ class TestSceneGroupHelpers(unittest.TestCase):
             self.scene.group_objects([])
 
     def test_ungroup_removes_group_from_scene(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        self.scene.ungroup(group.id)
-        self.assertNotIn(group.id, self.scene.scene_objects)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        self.scene.ungroup(group.id_)
+        self.assertNotIn(group.id_, self.scene.scene_objects)
 
     def test_ungroup_returns_members(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        members = self.scene.ungroup(group.id)
-        ids = {m.id for m in members}
-        self.assertIn(self.obj_a.id, ids)
-        self.assertIn(self.obj_b.id, ids)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        members = self.scene.ungroup(group.id_)
+        ids = {m.id_ for m in members}
+        self.assertIn(self.obj_a.id_, ids)
+        self.assertIn(self.obj_b.id_, ids)
 
     def test_ungroup_clears_group_id_from_members(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        self.scene.ungroup(group.id)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        self.scene.ungroup(group.id_)
         self.assertIsNone(self.obj_a.get_group_id())
         self.assertIsNone(self.obj_b.get_group_id())
 
     def test_ungroup_members_stay_in_scene(self):
-        group = self.scene.group_objects([self.obj_a.id, self.obj_b.id])
-        self.scene.ungroup(group.id)
-        self.assertIn(self.obj_a.id, self.scene.scene_objects)
-        self.assertIn(self.obj_b.id, self.scene.scene_objects)
+        group = self.scene.group_objects([self.obj_a.id_, self.obj_b.id_])
+        self.scene.ungroup(group.id_)
+        self.assertIn(self.obj_a.id_, self.scene.scene_objects)
+        self.assertIn(self.obj_b.id_, self.scene.scene_objects)
 
     def test_ungroup_nonexistent_id_raises(self):
         with self.assertRaises(ValueError):
@@ -462,7 +462,7 @@ class TestSceneGroupHelpers(unittest.TestCase):
 
     def test_ungroup_non_group_raises(self):
         with self.assertRaises(ValueError):
-            self.scene.ungroup(self.obj_a.id)
+            self.scene.ungroup(self.obj_a.id_)
 
 
 # ---------------------------------------------------------------------------
@@ -479,8 +479,8 @@ class TestSceneFromDictTwoPass(unittest.TestCase):
         scene = Scene()
         scene.add_scene_object(obj_a)
         scene.add_scene_object(obj_b)
-        group = scene.group_objects([obj_a.id, obj_b.id], name="G")
-        return scene.to_dict(), group.id, obj_a.id, obj_b.id
+        group = scene.group_objects([obj_a.id_, obj_b.id_], name="G")
+        return scene.to_dict(), group.id_, obj_a.id_, obj_b.id_
 
     def test_from_dict_creates_group(self):
         d, group_id, _, _ = self._build_scene_dict()
@@ -514,7 +514,7 @@ class TestSceneFromDictTwoPass(unittest.TestCase):
         scene.add_scene_object(obj)
         d = scene.to_dict()
         restored = Scene.from_dict(d)
-        self.assertIn(obj.id, restored.scene_objects)
+        self.assertIn(obj.id_, restored.scene_objects)
 
 
 if __name__ == "__main__":

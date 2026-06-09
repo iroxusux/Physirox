@@ -14,7 +14,6 @@ Example::
     scene.add_scene_object(panel)
 """
 import uuid
-
 from physirox.interfaces import (
     IBasePhysicsBody,
     ISceneObject,
@@ -25,7 +24,10 @@ from physirox.models.scene.factory import SceneObjectFactory, SceneObjectTemplat
 from physirox.models.physics.factory import PhysicsSceneFactory
 
 
-class CompositeSceneObject(SceneObject, ICompositeSceneObject):
+class CompositeSceneObject(
+    ICompositeSceneObject,
+    SceneObject,
+):
     """Design-locked composite that owns child components at relative offsets.
 
     The composite is the sole entry in ``scene._scene_objects``.  Children are
@@ -46,7 +48,7 @@ class CompositeSceneObject(SceneObject, ICompositeSceneObject):
         name: str,
         physics_body: IBasePhysicsBody,
         description: str = "",
-        id: str | None = None,
+        id_: str | None = None,
         group_id: str | None = None,
         properties: dict | None = None,
         parent: SceneObject | None = None,
@@ -59,7 +61,7 @@ class CompositeSceneObject(SceneObject, ICompositeSceneObject):
             name=name,
             physics_body=physics_body,
             description=description,
-            id=id or f'{self._scene_object_type}_{uuid.uuid4()}',
+            id_=id_ or f'{self._scene_object_type}_{uuid.uuid4()}',
             group_id=group_id,
             properties=properties,
             parent=parent,
@@ -165,7 +167,7 @@ class CompositeSceneObject(SceneObject, ICompositeSceneObject):
             name=data["name"],
             physics_body=body,
             description=data.get("description", ""),
-            id=data.get("id", None),
+            id_=data.get("id_", None),
             group_id=data.get("group_id", None),
             properties=data.get("properties", {}),
             layer=data.get("layer", 0),

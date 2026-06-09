@@ -40,7 +40,7 @@ def _make_sensor(
     layer: int = 0,
     description: str = "",
     properties: dict | None = None,
-    id: str | None = None,
+    id_: str | None = None,
     group_id: str | None = None,
     tags: list[str] | None = None,
     body: ProximitySensorBody | None = None,
@@ -54,7 +54,7 @@ def _make_sensor(
         layer=layer,
         description=description,
         properties=properties,
-        id=id,
+        id_=id_,
         group_id=group_id,
         tags=tags,
     )
@@ -104,13 +104,13 @@ class TestSensorSceneObjectInit(unittest.TestCase):
         self.assertIs(obj._sensor_body, body)
 
     def test_explicit_id_stored(self):
-        obj = _make_sensor(id="sensor-abc")
-        self.assertEqual(obj.id, "sensor-abc")
+        obj = _make_sensor(id_="sensor-abc")
+        self.assertEqual(obj.id_, "sensor-abc")
 
     def test_auto_id_generated_when_none(self):
-        obj = _make_sensor(id=None)
-        self.assertIsNotNone(obj.id)
-        self.assertGreater(len(obj.id), 0)
+        obj = _make_sensor(id_=None)
+        self.assertIsNotNone(obj.id_)
+        self.assertGreater(len(obj.id_), 0)
 
     def test_group_id_stored(self):
         obj = _make_sensor(group_id="grp-007")
@@ -421,8 +421,8 @@ class TestSensorSceneObjectCreate(unittest.TestCase):
         self.assertEqual(obj._layer, 2)
 
     def test_id_passed_through(self):
-        obj = SensorSceneObject.create(name="s", id="sens-42")
-        self.assertEqual(obj.id, "sens-42")
+        obj = SensorSceneObject.create(name="s", id_="sens-42")
+        self.assertEqual(obj.id_, "sens-42")
 
     def test_description_passed_through(self):
         obj = SensorSceneObject.create(name="s", description="entry sensor")
@@ -532,8 +532,8 @@ class TestSensorSceneObjectFromDict(unittest.TestCase):
         self.assertEqual(obj.description, "entry zone")
 
     def test_restores_id(self):
-        obj = SensorSceneObject.from_dict(self._minimal_dict(id="sensor-xyz"))
-        self.assertEqual(obj.id, "sensor-xyz")
+        obj = SensorSceneObject.from_dict(self._minimal_dict(id_="sensor-xyz"))
+        self.assertEqual(obj.id_, "sensor-xyz")
 
     def test_restores_group_id(self):
         obj = SensorSceneObject.from_dict(self._minimal_dict(group_id="group-3"))

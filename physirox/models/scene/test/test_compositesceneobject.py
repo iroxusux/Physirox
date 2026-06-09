@@ -80,8 +80,8 @@ class TestCompositeSceneObjectInit(unittest.TestCase):
 
     def test_has_valid_id(self):
         comp = _make_composite()
-        self.assertIsNotNone(comp.id)
-        self.assertNotEqual(comp.id, "")
+        self.assertIsNotNone(comp.id_)
+        self.assertNotEqual(comp.id_, "")
 
 
 # ---------------------------------------------------------------------------
@@ -345,10 +345,10 @@ class TestCompositeSerializtion(unittest.TestCase):
 
     def test_id_preserved_through_serialization(self):
         comp, _, _ = self._make_populated()
-        original_id = comp.id
+        original_id = comp.id_
         d = comp.to_dict()
         restored = CompositeSceneObject.from_dict(d)
-        self.assertEqual(restored.id, original_id)
+        self.assertEqual(restored.id_, original_id)
 
     def test_from_dict_offsets_preserved(self):
         comp, _, _ = self._make_populated()
@@ -375,7 +375,7 @@ class TestCompositeSerializtion(unittest.TestCase):
         d = scene.to_dict()
 
         restored_scene = Scene.from_dict(d)
-        restored_comp = restored_scene.get_scene_object(comp.id)
+        restored_comp = restored_scene.get_scene_object(comp.id_)
         self.assertIsInstance(restored_comp, CompositeSceneObject)
         self.assertTrue(restored_comp.has_component("led"))  # type: ignore
 

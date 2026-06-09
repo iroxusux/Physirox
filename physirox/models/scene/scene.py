@@ -14,7 +14,7 @@ from physirox.interfaces import (
     ISceneGroup,
     IScene
 )
-from pyrox.models.protocols import CoreMixin
+from pyrox.models import CoreMixin
 from pyrox.models.connection import ConnectionRegistry
 from physirox.models.scene.sceneobject import SceneObject
 from physirox.models.scene.scenegroup import SceneGroup
@@ -69,12 +69,12 @@ class Scene(IScene, CoreMixin):
         Raises:
             ValueError: If scene object ID already exists
         """
-        if scene_object.id in self._scene_objects:
-            raise ValueError(f"Scene object with ID '{scene_object.id}' already exists in scene")
+        if scene_object.id_ in self._scene_objects:
+            raise ValueError(f"Scene object with ID '{scene_object.id_}' already exists in scene")
 
-        self._scene_objects[scene_object.id] = scene_object
+        self._scene_objects[scene_object.id_] = scene_object
         self._connection_registry.register_object(
-            scene_object.id,
+            scene_object.id_,
             scene_object
         )
         [callback(scene_object) for callback in self._on_scene_object_added]
@@ -211,7 +211,7 @@ class Scene(IScene, CoreMixin):
                 groups.append(obj)
 
             scene.add_scene_object(obj)
-            scene._connection_registry.register_object(obj.id, obj)
+            scene._connection_registry.register_object(obj.id_, obj)
 
         # ------ Pass 2: link group members ------
         for group in groups:

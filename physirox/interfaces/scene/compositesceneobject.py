@@ -192,7 +192,7 @@ class ICompositeSceneObject(ISceneObject):
         position (composite origin + component offset) before the component
         is ticked, so the collision/spatial systems always see correct bounds.
         """
-        ...
+        super().update(dt)
 
     # ---------- Rendering contract ----------
 
